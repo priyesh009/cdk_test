@@ -1,6 +1,8 @@
 from aws_cdk import core as cdk
 from aws_cdk import aws_s3 as s3
 from aws_cdk import aws_lambda as _lambda
+from aws_cdk import aws_apigatewayv2 as apigateway
+from aws_cdk import aws_apigatewayv2_integrations as api_integrations
 # For consistency with other languages, `cdk` is the preferred import name for
 # the CDK's core module.  The following line also imports it as `core` for use
 # with examples from the CDK Developer's Guide, which are in the process of
@@ -18,9 +20,35 @@ class CdkTestStack(cdk.Stack):
         # The code that defines your stack goes here
 
                 # Defines an AWS Lambda resource
-        my_lambda = _lambda.Function(
+        tms_lambda = _lambda.Function(
             self, 'TMS',
             runtime=_lambda.Runtime.PYTHON_3_7,
             code=_lambda.Code.from_asset('lambda'),
             handler='tms.lambda_handler',
         )
+
+        tms_httpapi = apigateway.HttpApi(self,
+                                            "tmsHttpApi",
+                                            cors_preflight={
+                                            "allow_methods": [apigateway.HttpMethod.GET, apigateway.HttpMethod.HEAD, apigateway.HttpMethod.OPTIONS, apigateway.HttpMethod.POST],
+                                            "allow_origins": ["*"],
+                                            "max_age": core.Duration.days(10)
+                                            },
+                                            # default_domain_mapping={
+                                            # "domain_name": dn,
+                                            # },
+                                            )
+        #tms_integration = HttpLambdaIntegration("TMSIntegration", tms_lambda)
+        tms_integration = api_integrations.LambdaProxyIntegration(
+ handler=tms_lambda,
+ )
+        tms_httpapi.add_routes(
+                path="/createtask",
+                methods=[apigateway.HttpMethod.POST],
+                integration=tms_integration
+                ) 
+        tms_httpapi.add_routes(
+                path="/gettask",
+                methods=[apigateway.HttpMethod.GET],
+                integration=tms_integration
+                ) 

@@ -56,3 +56,9 @@ command.
  * `cdk docs`        open CDK documentation
 
 Enjoy!
+
+
+## IMP Links
+ - YT : https://www.youtube.com/watch?v=-iO4r7rNims
+ - https://cdkworkshop.com/30-python/30-hello-cdk/200-lambda.html
+ - https://www.youtube.com/watch?v=M91vXdjve7A&list=LL&index=1&t=21s
