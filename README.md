@@ -14,5 +14,8 @@ AWS CDK is being used to create the required Task Manager service resources.
 
 ### Pending Tasks
 - Complete the lambda script and test the logic to inject and retrive task information 
+- set dynamoDb table name in the env variable of AWS lambda
+- create Lambda Role in CDK and grant Put and get DynamoDB permissions.
 - Configuring access patterns
+- Error/Exception handling
 - Final testing and making the code prod ready
