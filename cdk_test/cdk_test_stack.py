@@ -3,6 +3,7 @@ from aws_cdk import aws_s3 as s3
 from aws_cdk import aws_lambda as _lambda
 from aws_cdk import aws_apigatewayv2 as apigateway
 from aws_cdk import aws_apigatewayv2_integrations as api_integrations
+from aws_cdk import aws_dynamodb as dynamodb
 # For consistency with other languages, `cdk` is the preferred import name for
 # the CDK's core module.  The following line also imports it as `core` for use
 # with examples from the CDK Developer's Guide, which are in the process of
@@ -40,8 +41,8 @@ class CdkTestStack(cdk.Stack):
                                             )
         #tms_integration = HttpLambdaIntegration("TMSIntegration", tms_lambda)
         tms_integration = api_integrations.LambdaProxyIntegration(
- handler=tms_lambda,
- )
+                            handler=tms_lambda,
+                            )
         tms_httpapi.add_routes(
                 path="/createtask",
                 methods=[apigateway.HttpMethod.POST],
@@ -52,3 +53,7 @@ class CdkTestStack(cdk.Stack):
                 methods=[apigateway.HttpMethod.GET],
                 integration=tms_integration
                 ) 
+
+        tmstable = dynamodb.Table(self, "tmsTable",
+                partition_key=dynamodb.Attribute(name="PK", type=dynamodb.AttributeType.STRING)
+            )

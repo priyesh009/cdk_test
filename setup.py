@@ -24,6 +24,7 @@ setuptools.setup(
         "aws-cdk.aws_lambda",
         "aws-cdk.aws_apigatewayv2",
         "aws-cdk.aws_apigatewayv2_integrations",
+        "aws_cdk.aws_dynamodb"
     ],
 
     python_requires=">=3.6",
