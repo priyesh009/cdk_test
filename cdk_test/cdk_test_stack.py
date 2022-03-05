@@ -10,6 +10,7 @@ from aws_cdk import aws_dynamodb as dynamodb
 # being updated to use `cdk`.  You may delete this import if you don't need it.
 from aws_cdk import core
 
+DYNAMODB_TABLE = 'TMS_DyDB'
 
 class CdkTestStack(cdk.Stack):
 
@@ -25,6 +26,9 @@ class CdkTestStack(cdk.Stack):
             runtime=_lambda.Runtime.PYTHON_3_7,
             code=_lambda.Code.from_asset('lambda'),
             handler='tms.lambda_handler',
+            environment={
+            "tms_table": DYNAMODB_TABLE
+    }
         )
         # Defines an AWS HTTP API GW resource
         tms_httpapi = apigateway.HttpApi(self,
@@ -56,6 +60,7 @@ class CdkTestStack(cdk.Stack):
                 ) 
 
         # Defines an AWS DynamoDB Table resource
-        tmstable = dynamodb.Table(self, "tmsTable",
-                partition_key=dynamodb.Attribute(name="PK", type=dynamodb.AttributeType.STRING)
+        tmstable = dynamodb.Table(self, "tmsTable", table_name = DYNAMODB_TABLE,
+                partition_key=dynamodb.Attribute(name="PK", type=dynamodb.AttributeType.STRING),
+                sort_key=dynamodb.Attribute(name="SK", type=dynamodb.AttributeType.STRING)
             )

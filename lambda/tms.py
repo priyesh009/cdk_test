@@ -1,10 +1,10 @@
 import json
 import boto3
-
+import os
 dynamodb = boto3.resource('dynamodb')
 GET_RAW_PATH = "/gettask"
 CREATE_RAW_PATH = "/createtask"
-TABLE_NAME = 'CdkTestStack-tmsTable5AC380E7-FCG7COKMTHXV'
+TABLE_NAME = os.environ.get('tms_table')
 
 
 def lambda_handler(event, context):
@@ -33,24 +33,30 @@ def lambda_handler(event, context):
 
 def gettask(table,id):
     "To retrive the task from DynamoDB"
-    res = table.get_item(
-        Key = {
-            'PK':id
-        }
-        )
-    body = 'Hello Lambda from get task' + str(res['Item'])
-    return body
+    try:
+        res = table.get_item(
+            Key = {
+                'PK':id
+            }
+            )
+        body = 'Hello Lambda from get task' + str(res['Item'])
+        return body        
+    except KeyError:
+        return "error occured ID not present"
+
     
     
 def createtask(table,payload):
     "To add the task info into the DynamoDB"
-    res=json.loads(payload)
-    resp = table.put_item(
-    Item=dict(res) 
-    )
-    body = 'Hello Lambda from create task'
-    return body
-    
+    try:
+        res=json.loads(payload)
+        resp = table.put_item(
+        Item=dict(res) 
+        )
+        body = 'Hello Lambda from create task'
+        return body
+    except:
+        return "error occured enter both PK and SK"    
     
 def access_pattern():
     "To add the task info into the DynamoDB"
